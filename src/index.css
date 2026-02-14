@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary color scale — Motivational / Urgency */
+--color-primary-50:  #fef2f2;
+--color-primary-100: #fee2e2;
+--color-primary-200: #fecaca;
+--color-primary-300: #fca5a5;
+--color-primary-400: #fb7185;
+--color-primary-500: #e11d48;
+--color-primary-600: #be123c;
+--color-primary-700: #9f1239;
+--color-primary-800: #881337;
+--color-primary-900: #7f1d1d;
+--color-primary-950: #450a0a;
+
+/* RGB channels for primary-400 — used in JS color interpolation (GridProgress) */
+--primary-400-r: 251;
+--primary-400-g: 113;
+--primary-400-b: 133;
+
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+}
