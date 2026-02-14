@@ -1,3 +1,9 @@
+# Years Tracker V2
+
+<img width="1692" height="1118" alt="image" src="https://github.com/user-attachments/assets/2ccaf973-b2e5-4600-9f2a-f59f0fdc1b1d" />
+<img width="3840" height="1255" alt="image" src="https://github.com/user-attachments/assets/3f22fc54-3c8d-4d27-b8a4-52102aaf6cc6" />
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
