@@ -2,6 +2,8 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Setup from "./pages/Setup";
 
+const basename = import.meta.env.VITE_BASE_PATH || "/";
+
 export const router = createBrowserRouter(
   [
     {
@@ -18,6 +20,6 @@ export const router = createBrowserRouter(
     },
   ],
   {
-    basename: "/years-tracker-v2",
+    basename: basename,
   },
 );
