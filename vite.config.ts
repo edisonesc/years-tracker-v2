@@ -11,5 +11,5 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: "/years-tracker-v2",
+  base: "/years-tracker-v2/",
 });
