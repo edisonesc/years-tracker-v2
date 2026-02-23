@@ -14,5 +14,10 @@ export default defineConfig(({ mode }) => {
       },
     },
     base: env.VITE_BASE_PATH || "/",
+    test: {
+      globals: true,
+      environment: "jsdom",
+      setupFiles: "./src/setupTests.ts",
+    },
   };
 });
