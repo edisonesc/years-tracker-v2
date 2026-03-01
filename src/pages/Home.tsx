@@ -1,9 +1,17 @@
-import { BIRTH_DATE_KEY, DEFAULT_TARGET_YEAR, TARGET_DATE_KEY } from "@/constants";
+import {
+  BIRTH_DATE_KEY,
+  DEFAULT_TARGET_YEAR,
+  TARGET_DATE_KEY,
+} from "@/constants";
 import { useState, useEffect } from "react";
 import NumberFlow from "@number-flow/react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Settings2 } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,6 +22,36 @@ import {
   CarouselDots,
 } from "@/components/Carousel";
 import { GridProgress } from "@/components/GridProgress";
+
+/** Break a date difference into { years, months, days } components */
+function getDateDiff(from: Date, to: Date) {
+  let years = to.getFullYear() - from.getFullYear();
+  let months = to.getMonth() - from.getMonth();
+  let days = to.getDate() - from.getDate();
+
+  if (days < 0) {
+    months--;
+    const daysInPrevMonth = new Date(
+      to.getFullYear(),
+      to.getMonth(),
+      0,
+    ).getDate();
+    days += daysInPrevMonth;
+  }
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  return { years, months, days };
+}
+
+/** Percentage of lifespan elapsed, 0–100 */
+function getPercentLived(birth: Date, target: Date, now: Date): number {
+  const total = target.getTime() - birth.getTime();
+  const elapsed = now.getTime() - birth.getTime();
+  return Math.min(100, Math.max(0, (elapsed / total) * 100));
+}
 
 const UNITS = ["years", "months", "weeks", "days"] as const;
 type Unit = (typeof UNITS)[number];
@@ -27,7 +65,9 @@ const UNIT_LABELS: Record<Unit, string> = {
 
 export default function Home() {
   const navigate = useNavigate();
-  const [birthdate] = useState<string | null>(localStorage.getItem(BIRTH_DATE_KEY));
+  const [birthdate] = useState<string | null>(
+    localStorage.getItem(BIRTH_DATE_KEY),
+  );
   const [targetAge, setTargetAge] = useState<number>(() => {
     const stored = localStorage.getItem(TARGET_DATE_KEY);
     return stored !== null ? Number(stored) : DEFAULT_TARGET_YEAR;
@@ -49,6 +89,14 @@ export default function Home() {
   const targetYear =
     new Date(birthdate + "T00:00:00").getFullYear() + targetAge + 1;
   const target = `${targetYear}${birthdate.slice(4)}`;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const birthDate = new Date(birthdate + "T00:00:00");
+  const targetDate = new Date(target + "T00:00:00");
+  const age = getDateDiff(birthDate, today);
+  const remaining = getDateDiff(today, targetDate);
+  const pctLived = getPercentLived(birthDate, targetDate, today);
 
   const handleTargetAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
@@ -78,24 +126,51 @@ export default function Home() {
             <div className="flex items-center gap-3">
               {/* Born chip */}
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/4 border border-white/8">
-                <span className="text-[10px] uppercase tracking-widest text-white/30 font-medium">Born</span>
+                <span className="text-[10px] uppercase tracking-widest text-white/30 font-medium">
+                  Born
+                </span>
                 <span className="text-xs text-white/60 font-mono">
-                  {new Date(birthdate + "T00:00:00").toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+                  {new Date(birthdate + "T00:00:00").toLocaleDateString(
+                    "en-US",
+                    {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    },
+                  )}
                 </span>
               </div>
 
               {/* Target age chip */}
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary-500/10 border border-primary-500/20">
-                <span className="text-[10px] uppercase tracking-widest text-primary-400/60 font-medium leading-none">Target</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/4 border border-white/8">
+                <span className="text-[10px] uppercase tracking-widest text-white/30 font-medium leading-none">
+                  Target
+                </span>
                 <NumberFlow
                   value={displayAge}
-                  className="text-sm font-semibold text-primary-300 [font-variant-numeric:tabular-nums] leading-none"
+                  className="text-xs text-white/60 font-mono [font-variant-numeric:tabular-nums] leading-none"
                 />
-                <span className="text-[10px] text-primary-400/50 font-medium leading-none">yrs</span>
+                <span className="text-[10px] text-white/30 font-medium leading-none">
+                  yrs
+                </span>
+              </div>
+
+              {/* Age now chip */}
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/4 border border-white/8">
+                <span className="text-[10px] uppercase tracking-widest text-white/30 font-medium">Age now</span>
+                <span className="text-xs text-white/60 font-mono">{age.years}y {age.months}m {age.days}d</span>
+              </div>
+
+              {/* Remaining chip */}
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/4 border border-white/8">
+                <span className="text-[10px] uppercase tracking-widest text-white/30 font-medium">Remaining</span>
+                <span className="text-xs text-white/60 font-mono">{remaining.years}y {remaining.months}m {remaining.days}d</span>
+              </div>
+
+              {/* Lived chip */}
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary-500/10 border border-primary-500/20">
+                <span className="text-[10px] uppercase tracking-widest text-primary-400/60 font-medium">Lived</span>
+                <span className="text-sm font-semibold text-primary-300 font-mono">{pctLived.toFixed(1)}%</span>
               </div>
             </div>
           </div>
@@ -115,12 +190,16 @@ export default function Home() {
             >
               {/* Popover header */}
               <div className="px-4 py-3 border-b border-white/6">
-                <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-primary-400/60">Settings</p>
+                <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-primary-400/60">
+                  Settings
+                </p>
               </div>
 
               {/* Fields */}
               <div className="px-4 py-3 space-y-1.5">
-                <Label className="text-[10px] uppercase tracking-widest text-white/30 font-medium">Target age</Label>
+                <Label className="text-[10px] uppercase tracking-widest text-white/30 font-medium">
+                  Target age
+                </Label>
                 <Input
                   type="number"
                   value={targetAgeInput}
