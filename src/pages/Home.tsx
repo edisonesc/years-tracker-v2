@@ -3,10 +3,11 @@ import {
   DEFAULT_TARGET_YEAR,
   TARGET_DATE_KEY,
 } from "@/constants";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import NumberFlow from "@number-flow/react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { Settings2 } from "lucide-react";
+import { Download, Settings2 } from "lucide-react";
+import { toPng } from "html-to-image";
 import {
   Popover,
   PopoverContent,
@@ -22,6 +23,7 @@ import {
   CarouselDots,
 } from "@/components/Carousel";
 import { GridProgress } from "@/components/GridProgress";
+import { ExportCard } from "@/components/ExportCard";
 
 /** Break a date difference into { years, months, days } components */
 function getDateDiff(from: Date, to: Date) {
@@ -78,6 +80,26 @@ export default function Home() {
   });
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [displayAge, setDisplayAge] = useState(0);
+  const [showExportCard, setShowExportCard] = useState(false);
+  const captureRef = useRef<HTMLDivElement>(null);
+
+  async function exportImage() {
+    setShowExportCard(true);
+    // Wait one frame for React to mount the card before capturing
+    await new Promise<void>((resolve) => setTimeout(resolve, 50));
+    const el = captureRef.current;
+    if (el) {
+      const dataUrl = await toPng(el, {
+        backgroundColor: "#0f0f0f",
+        pixelRatio: 2,
+      });
+      const link = document.createElement("a");
+      link.download = "my-life-progress.png";
+      link.href = dataUrl;
+      link.click();
+    }
+    setShowExportCard(false);
+  }
 
   useEffect(() => {
     const id = setTimeout(() => setDisplayAge(targetAge), 0);
@@ -108,7 +130,32 @@ export default function Home() {
     }
   };
 
+  const birthdateDisplay = new Date(birthdate + "T00:00:00").toLocaleDateString(
+    "en-US",
+    { month: "short", day: "numeric", year: "numeric" },
+  );
+
   return (
+    <>
+      {/* Off-screen export card — mounted only during export */}
+      {showExportCard && (
+        <div
+          style={{ position: "fixed", left: "-9999px", top: 0, pointerEvents: "none" }}
+          aria-hidden="true"
+        >
+          <ExportCard
+            ref={captureRef}
+            birthdate={birthdate}
+            target={target}
+            targetAge={targetAge}
+            birthdateDisplay={birthdateDisplay}
+            age={age}
+            remaining={remaining}
+            pctLived={pctLived}
+          />
+        </div>
+      )}
+
     <div className="w-screen h-screen bg-[#0f0f0f] p-16 flex flex-col">
       <div className="flex flex-col gap-8 flex-1 min-h-0">
         {/* Page header */}
@@ -175,6 +222,15 @@ export default function Home() {
             </div>
           </div>
 
+          <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={exportImage}
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-white/40 hover:text-white hover:bg-white/8 transition-colors cursor-pointer outline-none border-transparent bg-transparent"
+          >
+            <Download className="w-4 h-4" />
+          </button>
+
           <Popover open={settingsOpen} onOpenChange={setSettingsOpen}>
             <PopoverTrigger asChild>
               <button
@@ -220,6 +276,7 @@ export default function Home() {
               </div>
             </PopoverContent>
           </Popover>
+          </div>
         </div>
 
         <Carousel className="flex-1 min-h-0">
@@ -235,5 +292,6 @@ export default function Home() {
         </Carousel>
       </div>
     </div>
+    </>
   );
 }

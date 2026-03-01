@@ -161,31 +161,34 @@ interface CarouselContentProps {
   children: React.ReactNode;
 }
 
-function CarouselContent({ className, children }: CarouselContentProps) {
-  const { onTouchStart, onTouchEnd, active, direction } = useCarousel();
-  const items = React.Children.toArray(children);
+const CarouselContent = React.forwardRef<HTMLDivElement, CarouselContentProps>(
+  function CarouselContent({ className, children }, ref) {
+    const { onTouchStart, onTouchEnd, active, direction } = useCarousel();
+    const items = React.Children.toArray(children);
 
-  return (
-    <div
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-      className={cn("bg-white/3 border border-white/8 rounded-2xl p-6 overflow-y-auto flex-1 min-h-0", className)}
-    >
-      <AnimatePresence mode="wait" initial={false} custom={direction}>
-        <motion.div
-          key={active}
-          custom={direction}
-          initial={{ x: direction * 24, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: direction * -24, opacity: 0 }}
-          transition={{ duration: 0.2, ease: "easeInOut" }}
-        >
-          {items[active]}
-        </motion.div>
-      </AnimatePresence>
-    </div>
-  );
-}
+    return (
+      <div
+        ref={ref}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        className={cn("bg-white/3 border border-white/8 rounded-2xl p-6 overflow-y-auto flex-1 min-h-0", className)}
+      >
+        <AnimatePresence mode="wait" initial={false} custom={direction}>
+          <motion.div
+            key={active}
+            custom={direction}
+            initial={{ x: direction * 24, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: direction * -24, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+          >
+            {items[active]}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    );
+  }
+);
 CarouselContent.displayName = "CarouselContent";
 
 // ─── Item ─────────────────────────────────────────────────────────────────────
