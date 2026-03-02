@@ -126,7 +126,7 @@ function CarouselTabs({ labels, className }: CarouselTabsProps) {
             type="button"
             onClick={() => setActive(i)}
             className={cn(
-              "relative px-3 py-1 rounded-lg text-xs font-medium cursor-pointer outline-none border-transparent bg-transparent transition-colors",
+              "relative px-2 sm:px-3 py-1 rounded-lg text-xs font-medium cursor-pointer outline-none border-transparent bg-transparent transition-colors",
               active === i ? "text-white" : "text-white/40 hover:text-white/70",
             )}
           >
@@ -171,7 +171,7 @@ const CarouselContent = React.forwardRef<HTMLDivElement, CarouselContentProps>(
         ref={ref}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        className={cn("bg-white/3 border border-white/8 rounded-2xl p-6 overflow-y-auto flex-1 min-h-0", className)}
+        className={cn("bg-white/3 border border-white/8 rounded-2xl p-4 sm:p-6 overflow-y-auto flex-1 min-h-0", className)}
       >
         <AnimatePresence mode="wait" initial={false} custom={direction}>
           <motion.div

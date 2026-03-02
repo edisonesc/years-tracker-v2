@@ -58,10 +58,10 @@ const P400_R = 251, P400_G = 113, P400_B = 133;
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 const CELL_CONFIG: Record<Unit, { base: string; showTooltip: boolean }> = {
-  years:  { base: "w-10 h-10", showTooltip: true  },
-  months: { base: "w-7 h-7",  showTooltip: true  },
-  weeks:  { base: "w-4 h-4",  showTooltip: true  },
-  days:   { base: "w-3 h-3",  showTooltip: false },
+  years:  { base: "w-7 h-7 sm:w-10 sm:h-10", showTooltip: true  },
+  months: { base: "w-5 h-5 sm:w-7 sm:h-7",  showTooltip: true  },
+  weeks:  { base: "w-3 h-3 sm:w-4 sm:h-4",  showTooltip: true  },
+  days:   { base: "w-2 h-2 sm:w-3 sm:h-3",  showTooltip: false },
 };
 
 const UNIT_LABEL: Record<Unit, string> = {
@@ -146,7 +146,7 @@ export function GridProgress({ unit, date, target }: GridProgressProps) {
       </div>
 
       {/* Grid */}
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-0.5 sm:gap-1">
         {cells.map((cellDate, i) => {
           const isNow =
             unit === "years"

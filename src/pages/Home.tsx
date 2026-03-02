@@ -156,11 +156,11 @@ export default function Home() {
         </div>
       )}
 
-    <div className="w-screen h-screen bg-[#0f0f0f] p-16 flex flex-col">
-      <div className="flex flex-col gap-8 flex-1 min-h-0">
+    <div className="w-screen h-screen bg-[#0f0f0f] p-4 sm:p-8 lg:p-16 flex flex-col">
+      <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8 flex-1 min-h-0">
         {/* Page header */}
         <div className="flex items-start justify-between">
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             <div>
               <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-primary-400/60 mb-1">
                 Life Tracker
@@ -170,7 +170,7 @@ export default function Home() {
               </h1>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2">
               {/* Born chip */}
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/4 border border-white/8">
                 <span className="text-[10px] uppercase tracking-widest text-white/30 font-medium">
