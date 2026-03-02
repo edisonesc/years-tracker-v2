@@ -171,7 +171,7 @@ const CarouselContent = React.forwardRef<HTMLDivElement, CarouselContentProps>(
         ref={ref}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        className={cn("bg-white/3 border border-white/8 rounded-2xl p-4 sm:p-6 overflow-y-auto flex-1 min-h-0", className)}
+        className={cn("bg-white/3 border border-white/8 rounded-2xl p-4 sm:p-6 overflow-hidden flex-1 min-h-0 flex flex-col", className)}
       >
         <AnimatePresence mode="wait" initial={false} custom={direction}>
           <motion.div
@@ -181,6 +181,7 @@ const CarouselContent = React.forwardRef<HTMLDivElement, CarouselContentProps>(
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: direction * -24, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="flex-1 min-h-0 flex flex-col"
           >
             {items[active]}
           </motion.div>
@@ -199,7 +200,7 @@ interface CarouselItemProps {
 }
 
 function CarouselItem({ className, children }: CarouselItemProps) {
-  return <div className={className}>{children}</div>;
+  return <div className={cn("flex-1 min-h-0 flex flex-col", className)}>{children}</div>;
 }
 CarouselItem.displayName = "CarouselItem";
 
